@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>receipe_of_the_day</title>
+    <link rel="stylesheet" href="./style/index.css" />
+    <style>
+      #data {
+        font-family: calibri;
+        width: 80%;
+        margin: auto;
+
+        text-align: justify;
+      }
+      img{
+        
+        text-align: center;
+        justify-content: center;
+        width: 60%;
+        height: 400px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+      h3{
+       color: black;
+       font-weight: lighter;
+       font-size: 24px;
+     }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="data"></div>
+  </body>
+</html>
+<script type="module">
+  import navbar from "./components/navbar.js";
+  let container = document.querySelector("#container");
+  container.innerHTML = navbar();
+  document.querySelector("#day").addEventListener("click", gotoDay);
+
+  function gotoDay() {
+    window.location.href = "receipe_of_the_day.html";
+  }
+  document.querySelector("#latest").addEventListener("click", latest);
+  function latest() {
+    window.location.href = "latest_receipe.html";
+  }
+  document.querySelector("#home").addEventListener("click", home);
+  function home() {
+    window.location.href = "index.html";
+  }
+
+  //=====================================================================
+  let data_div = document.querySelector("#data");
+  import { getData, appendData } from "./scripts/showData.js";
+  let response = getData(`https://www.themealdb.com/api/json/v1/1/random.php`);
+  console.log(getData);
+
+  response
+    .then((res) => {
+      console.log(res);
+      appendData(res.meals, data_div);
+    })
+
+    .catch((er) => {
+      console.log(er);
+    });
+</script>

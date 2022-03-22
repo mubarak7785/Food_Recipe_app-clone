@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/index.css" />
+    <style>
+     h1{
+       color: blue;
+        text-decoration: underline;
+     }
+     h3{
+       color: black;
+       font-weight: lighter;
+       font-size: 24px;
+     }
+      img{
+        
+        text-align: center;
+        justify-content: center;
+        width: 60%;
+        height: 400px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+      #detail{
+        font-family: calibri;
+        width: 80%;
+        margin: auto;
+        
+        text-align: justify;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="data"></div>
+    
+    <div id="detail"></div>
+  </body>
+</html>
+<script type="module">
+  //-----------------------------------------------------------------------------------
+  import navbar from "./components/navbar.js";
+  let container = document.querySelector("#container");
+  container.innerHTML = navbar();
+  document.querySelector("#day").addEventListener("click", gotoDay);
+
+  function gotoDay() {
+    window.location.href = "receipe_of_the_day.html";
+  }
+  document.querySelector("#latest").addEventListener("click", latest);
+  function latest() {
+    window.location.href = "latest_receipe.html";
+  }
+  document.querySelector("#home").addEventListener("click", home);
+  function home() {
+    window.location.href = "index.html";
+  }
+
+  //==============================================================================================
+  
+  // var data_div = document.querySelector("#data");
+  
+  //   var name = document.querySelector("#search").value;
+  //   import {getData} from "./scripts/showData.js";
+  //   console.log(getData);
+  //   let response = getData(
+  //     `https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`
+  //   );
+
+  //   response
+  //     .then((res) => {
+  //       console.log(res);
+  //       app
+  //     })
+
+  //     .catch((er) => {
+  //       console.log(er);
+  //     });
+  //======================================================================================================
+
+  var x=document.querySelector("#search")
+  x.oninput=function (){
+    debounce(searchFood,300)
+  }
+  var food_waiting;
+  var food_div = document.querySelector("#food");
+
+  async function searchFood() {
+    try {
+      let name = document.querySelector("#search").value;
+
+      if (name.length <= 1) {
+        food_div.innerHTML=""
+        return false;
+
+      }
+      let response = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`
+      );
+
+      let data = await response.json();
+      let food_arr = data.meals;
+      appendFood(food_arr);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function appendFood(food) {
+    food_div.innerHTML = null;
+    food.forEach(function (elem) {
+      let p = document.createElement("p");
+      p.textContent = elem.strMeal;
+      
+      food_div.append(p)
+      p.onclick=function(){
+        selectFood(elem)
+        food_div.innerHTML=""
+      }
+    });
+  }
+
+  function selectFood(elem){
+    document.querySelector("#detail").innerHTML=""
+    let title=document.createElement("h1");
+    title.textContent=elem.strMeal
+    let image= document.createElement("img");
+      image.src=elem.strMealThumb
+      let rec=document.createElement("h2");
+    rec.textContent="RECEIPE"
+      let dis=document.createElement("h3");
+    dis.textContent=elem.strInstructions
+    let link=document.createElement("h2")
+    link.textContent=`Youtube Link - ${elem.strYoutube}`
+    let sub_div=document.createElement("div")
+    sub_div.append(title,image,rec,dis,link)
+
+    document.querySelector("#detail").append(sub_div)
+  }
+
+  function debounce(func, delay) {
+    if (food_waiting) {
+      clearInterval(food_waiting);
+    }
+    food_waiting = setTimeout(function () {
+      func();
+    }, delay);
+  }
+  
+</script>
